@@ -1,30 +1,27 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Sənin yeni göndərdiyin API açarı
-genai.configure(api_key="AIzaSyB04q0JslUj7JJfBDu3sypTza-9z5A6QmQ")
+# Sənin tam yeni və aktiv API açarın
+API_KEY = "AIzaSyB04qO-lslUj7JJfBDu3sypTza-9z5A6QmQ"
 
-# Ən sürətli və stabil model
+genai.configure(api_key=API_KEY)
+
+# Ən stabil işləyən model versiyası
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.set_page_config(page_title="Az AI Pro", page_icon="🤖")
-
 st.title("🤖 Az AI Pro - Sənin Köməkçin")
 st.markdown("---")
 
-# İstifadəçi girişi
-user_input = st.text_input("Sualınızı bura yazın və Enter sıxın...")
+user_input = st.text_input("Sualını bura yaz və Enter sıx...")
 
 if user_input:
-    with st.spinner('Süni intellekt cavab verir...'):
+    with st.spinner('Süni intellekt cavab hazırlayır...'):
         try:
-            # Süni intellektdən cavabın alınması
             response = model.generate_content(user_input)
-            st.success("Cavab:")
+            st.success("Süni İntellektin Cavabı:")
             st.write(response.text)
         except Exception as e:
-            st.error("Bağlantı xətası! API açarı hələ aktiv olmaya bilər.")
-            # Xətanı dəqiq görmək üçün (lazım olsa):
-            # st.write(str(e))
-
-st.sidebar.info("Bu tətbiq Gemini AI tərəfindən idarə olunur.")
+            st.error("Bir xəta baş verdi. Zəhmət olmasa API açarının tam aktivləşməsi üçün 1-2 dəqiqə gözləyin.")
+            st.info("Texniki detallar üçün aşağıya baxın:")
+            st.code(str(e))
