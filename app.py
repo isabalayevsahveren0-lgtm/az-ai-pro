@@ -5,16 +5,17 @@ import google.generativeai as genai
 st.set_page_config(page_title="Az AI Pro", page_icon="🤖")
 st.title("🤖 Az AI Pro")
 
-# API açarını Streamlit Secrets-dən oxuyuruq
+# API açarını Secrets-dən oxuyuruq
 try:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    api_key = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=api_key)
 except Exception as e:
-    st.error("API açarı tapılmadı. Zəhmət olmasa Secrets hissəsini yoxlayın.")
+    st.error("API açarı tapılmadı! Lütfən Settings > Secrets hissəsini yoxlayın.")
 
-# Model nizamlaması - Ən stabil model budur
+# Model nizamlaması - Ən son stabil versiya
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Mesaj yaddaşı (Söhbət tarixçəsi)
+# Mesaj yaddaşı
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -25,7 +26,6 @@ for message in st.session_state.messages:
 
 # İstifadəçi sualı
 if prompt := st.chat_input("Mənə bir sual ver..."):
-    # İstifadəçi mesajını yadda saxla və göstər
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -33,17 +33,13 @@ if prompt := st.chat_input("Mənə bir sual ver..."):
     # AI-dan cavab al
     with st.chat_message("assistant"):
         try:
-            # Ən sadə müraciət forması
+            # Düzgün generasiya metodu
             response = model.generate_content(prompt)
-            
-            if response.text:
+            if response and response.text:
                 full_response = response.text
                 st.markdown(full_response)
-                # AI mesajını yadda saxla
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
             else:
-                st.warning("AI cavab qaytara bilmədi, lütfən yenidən yoxlayın.")
-                
+                st.error("AI cavab verə bilmədi. API açarınızı və ya model adını yoxlayın.")
         except Exception as e:
-            # Əgər model adı tapılmasa, bir də yoxla (Alternativ model adı ilə)
-            st.error(f"Xəta baş verdi. Sistem modeli yenidən yükləyir... (Xəta: {e})")
+            st.error(f"Xəta: {e}")
