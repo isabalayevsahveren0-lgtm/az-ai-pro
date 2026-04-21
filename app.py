@@ -1,23 +1,17 @@
 import streamlit as st
 import google.generativeai as genai
 
+st.set_page_config(page_title="Az AI Pro")
 st.title("🤖 Az AI Pro")
 
-# API açarını yoxla
+# API Key yoxlanışı
 if "GOOGLE_API_KEY" not in st.secrets:
-    st.error("Secrets hissəsinə API açarını qoymağı unutmusunuz!")
+    st.error("Lütfən Secrets hissəsinə GOOGLE_API_KEY əlavə edin!")
 else:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-
-    # Model siyahısını yoxlayan və ən uyğununu seçən sistem
-    try:
-        # Ən çox işləyən model adı budur
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        # İşləyib-işləmədiyini yoxlamaq üçün boş test
-        model.generate_content("hi") 
-    except:
-        # Əgər yuxarıdakı tapılmasa, bunu yoxla
-        model = genai.GenerativeModel('gemini-pro')
+    
+    # Modelin təyini
+    model = genai.GenerativeModel('gemini-1.5-flash')
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -26,7 +20,7 @@ else:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    if prompt := st.chat_input("Sualınızı bura yazın..."):
+    if prompt := st.chat_input("Sualınızı yazın..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
@@ -37,4 +31,4 @@ else:
                 st.markdown(response.text)
                 st.session_state.messages.append({"role": "assistant", "content": response.text})
             except Exception as e:
-                st.error(f"Xəta: {e}")
+                st.error(f"Xəta baş verdi: {e}")
