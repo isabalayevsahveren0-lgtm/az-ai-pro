@@ -8,8 +8,8 @@ st.title("🤖 Az AI Pro")
 # API açarını Streamlit Secrets-dən oxuyuruq
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
-# Model nizamlaması
-model = genai.GenerativeModel('gemini-pro')
+# Model nizamlaması (DÜZƏLİŞ EDİLDİ: gemini-pro yerinə gemini-1.5-flash yazıldı)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Mesaj yaddaşı (Söhbət tarixçəsi)
 if "messages" not in st.session_state:
@@ -31,6 +31,7 @@ if prompt := st.chat_input("Mənə bir sual ver..."):
         message_placeholder = st.empty()
         full_response = ""
         try:
+            # AI cavabını generasiya edir
             response = model.generate_content(prompt)
             full_response = response.text
             message_placeholder.markdown(full_response)
