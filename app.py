@@ -1,11 +1,12 @@
-
 import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
 # Sənin API açarın
-genai.configure(api_key="AIzaSyBWw9U7yHt2Nk2KBOkwhqATI7hoYfi8cp0")
-model = genai.GenerativeModel('gemini-1.5-flash')
+genai.configure(api_key="AIzaSyBww9U7yHt2NkZ8OkwmQATI7hoYfI8cp0")
+
+# Modeli 'gemini-pro' olaraq dəyişdik ki, xəta verməsin
+model = genai.GenerativeModel('gemini-pro')
 
 st.set_page_config(page_title="Az AI Pro", page_icon="🤖")
 
@@ -14,45 +15,35 @@ st.markdown("---")
 
 # Yan menyu
 st.sidebar.title("Seçimlər")
-secim = st.sidebar.radio("Nə etmək istəyirsən?", ["💬 Söhbət", "📸 Şəkil Analizi"])
+secim = st.sidebar.radio("Nə etmək istəyirsən?", ["💬 Söhbət", "🖼️ Şəkil Analizi"])
 
 if secim == "💬 Söhbət":
     st.subheader("Ağıllı Söhbət")
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    if prompt := st.chat_input("Sualınızı yazın..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
-        with st.chat_message("assistant"):
+    user_input = st.text_input("Sualını bura yaz...")
+    
+    if user_input:
+        with st.spinner('Düşünürəm...'):
             try:
-                full_prompt = f"Sən Az AI Pro köməkçisisən. Azərbaycan dilində cavab ver. Sual: {prompt}"
-                response = model.generate_content(full_prompt)
-                st.markdown(response.text)
-                st.session_state.messages.append({"role": "assistant", "content": response.text})
+                # Söhbət üçün gemini-pro modeli işləyir
+                response = model.generate_content(user_input)
+                st.info(response.text)
             except Exception as e:
-                st.error(f"Xəta: {e}")
+                st.error(f"Xəta baş verdi: {e}")
 
-elif secim == "📸 Şəkil Analizi":
-    st.subheader("Şəkli Analiz Et")
+elif secim == "🖼️ Şəkil Analizi":
+    st.subheader("Şəkil Analizi")
     uploaded_file = st.file_uploader("Şəkil yüklə...", type=["jpg", "jpeg", "png"])
     
-    if uploaded_file is not None:
+    if uploaded_file:
         image = Image.open(uploaded_file)
-        st.image(image, caption='Yüklənən şəkil', use_column_width=True)
+        st.image(image, caption='Yüklənmiş şəkil', use_column_width=True)
         
-        if st.button("Analiz Et"):
-            with st.spinner('Analiz edilir...'):
+        if st.button("Şəkli analiz et"):
+            # Şəkil analizi üçün flash modeli daha uyğundur
+            vision_model = genai.GenerativeModel('gemini-1.5-flash')
+            with st.spinner('Şəklə baxıram...'):
                 try:
-                    response = model.generate_content(["Bu şəkli Azərbaycan dilində ətraflı təsvir et.", image])
-                    st.success("Nəticə:")
-                    st.write(response.text)
+                    response = vision_model.generate_content(["Bu şəkildə nə var? Azərbaycan dilində izah et.", image])
+                    st.success(response.text)
                 except Exception as e:
-                    st.error(f"Xəta: {e}")
-    
+                    st.error("Bu funksiya üçün hələlik limit tətbiq olunur.")
