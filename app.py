@@ -1,3 +1,3 @@
 import streamlit as st
-
-st.write("Salam! Əgər bu yazını görürsənsə, deməli sayt artıq işləyir!")
+st.title("🤖 Az AI Pro")
+st.success("Təbriklər! Sayt artıq işləyir!")
