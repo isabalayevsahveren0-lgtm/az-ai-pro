@@ -1,2 +1,3 @@
 import streamlit as st
-st.write("SAYT ISLEDI!")
+st.title("🤖 Az AI Pro İşləyir!")
+st.write("Sahveren, nəhayət ki, alındı!")
