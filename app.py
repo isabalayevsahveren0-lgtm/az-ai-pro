@@ -1,11 +1,11 @@
 import streamlit as st
 import google.generativeai as genai
 
-# API konfiqurasiyası
+# Secrets-dən açarı götürürük
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
-    st.error("API açarı Secrets-də tapılmadı!")
+    st.error("API açarı tapılmadı! Lütfən Secrets-ə əlavə edin.")
     st.stop()
 
 st.title("🤖 Az AI Pro")
@@ -17,8 +17,8 @@ user_input = st.text_input("Sualınızı yazın:")
 
 if user_input:
     try:
-        # Köhnə versiya xətalarını keçmək üçün ən sadə çağırış
+        # Ən sadə müraciət metodu
         response = model.generate_content(user_input)
         st.write(response.text)
     except Exception as e:
-        st.error(f"Xəta detalları: {str(e)}")
+        st.error(f"Sistem xətası: {str(e)}")
