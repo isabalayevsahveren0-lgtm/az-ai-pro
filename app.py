@@ -1,27 +1,37 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Sənin tam yeni və aktiv API açarın
-API_KEY = "AIzaSyB04qO-lslUj7JJfBDu3sypTza-9z5A6QmQ"
+# Sənin tam yeni API açarın bura yerləşdirildi
+API_KEY = "AIzaSyAbVjGQvztSI9MvogqdTkrXd3ju71xBcoI"
 
-genai.configure(api_key=API_KEY)
+try:
+    genai.configure(api_key=API_KEY)
+    # Ən yeni və sürətli model
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    st.set_page_config(page_title="Az AI Pro", page_icon="🤖", layout="centered")
+    
+    st.title("🤖 Az AI Pro - Sənin Köməkçin")
+    st.markdown("---")
 
-# Ən stabil işləyən model versiyası
-model = genai.GenerativeModel('gemini-1.5-flash')
+    # Giriş hissəsi
+    user_input = st.text_input("Sualını bura yaz və Enter sıx...", placeholder="Məsələn: Salam, necəsən?")
 
-st.set_page_config(page_title="Az AI Pro", page_icon="🤖")
-st.title("🤖 Az AI Pro - Sənin Köməkçin")
-st.markdown("---")
+    if user_input:
+        with st.spinner('Süni intellekt cavab hazırlayır...'):
+            try:
+                response = model.generate_content(user_input)
+                st.success("Süni İntellektin Cavabı:")
+                st.write(response.text)
+            except Exception as e:
+                # Xətanın nə olduğunu anlamaq üçün ətraflı mesaj
+                st.error("Bağlantı xətası! API açarı hələ aktiv olmaya bilər.")
+                st.info("Texniki detal:")
+                st.code(str(e))
+                
+    # Səhifənin aşağısına imza
+    st.markdown("---")
+    st.caption("Developed by Sahveren | Az AI Pro v1.0")
 
-user_input = st.text_input("Sualını bura yaz və Enter sıx...")
-
-if user_input:
-    with st.spinner('Süni intellekt cavab hazırlayır...'):
-        try:
-            response = model.generate_content(user_input)
-            st.success("Süni İntellektin Cavabı:")
-            st.write(response.text)
-        except Exception as e:
-            st.error("Bir xəta baş verdi. Zəhmət olmasa API açarının tam aktivləşməsi üçün 1-2 dəqiqə gözləyin.")
-            st.info("Texniki detallar üçün aşağıya baxın:")
-            st.code(str(e))
+except Exception as main_e:
+    st.error(f"Sistem xətası: {main_e}")
