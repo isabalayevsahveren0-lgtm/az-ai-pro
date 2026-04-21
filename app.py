@@ -1,35 +1,32 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Sənin göndərdiyin tam yeni API açarı
-API_KEY = "AIzaSyBC515_iJJ__xYk-TPesZJgD2im725H6Ao"
+# Sənin ən son aldığın API açarını bura dırnaq içində yapışdır
+API_KEY = "AIzaSyB04qO-lslUj7JJfBDu3sypTza-9z5A6QmQ"
 
-# Google AI Konfiqurasiyası
+# Konfiqurasiya - Versiya problemini həll etmək üçün
 genai.configure(api_key=API_KEY)
+
+# Modeli çağırmaq üçün ən stabil üsul
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Saytın interfeys ayarları
-st.set_page_config(page_title="Az AI Pro", page_icon="🤖", layout="centered")
-
-st.title("🤖 Az AI Pro")
-st.subheader("Sənin şəxsi süni intellekt köməkçin")
+st.set_page_config(page_title="Az AI Pro", page_icon="🤖")
+st.title("🤖 Az AI Pro - Sənin Köməkçin")
 st.markdown("---")
 
-# İstifadəçi sualı üçün sahə
-user_query = st.text_input("Sualınızı bura yazın:", placeholder="Məsələn: Süni intellekt gələcəkdə nələri dəyişəcək?")
+user_input = st.text_input("Sualınızı bura yazın:")
 
-if user_query:
-    with st.spinner('Cavab hazırlanır, zəhmət olmasa gözləyin...'):
+if user_input:
+    with st.spinner('Süni intellekt cavab verir...'):
         try:
-            # Süni intellektdən cavabın alınması
-            response = model.generate_content(user_query)
-            st.success("🤖 Cavab:")
+            # generate_content funksiyasını ən sadə formada çağırırıq
+            response = model.generate_content(user_input)
+            st.success("Cavab:")
             st.write(response.text)
         except Exception as e:
-            st.error("Bir xəta baş verdi. API açarı hələ tam aktiv olmaya bilər.")
+            st.error("Bağlantı xətası! API açarı hələ tam aktiv olmaya bilər.")
+            # Xətanın tam detallarını burada görəcəksən:
             with st.expander("Xətanın detalları"):
-                st.code(str(e))
+                st.write(str(e))
 
-# Alt hissə
-st.markdown("---")
-st.caption("Az AI Pro v1.0 | Google Gemini Pro tərəfindən dəstəklənir")
+st.sidebar.info("Az AI Pro v1.1 | Google Gemini Pro tərəfindən dəstəklənir")
